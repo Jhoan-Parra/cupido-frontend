@@ -11,8 +11,8 @@ Este documento contiene información técnica específica para integrar el front
 ### 2. Endpoints pendientes de implementar
 - ⚠️ `PATCH /api/v1/profile/update-profile/`
 - ⚠️ `GET /api/v1/profile/get-profile/:userId/`
-- ⚠️ `GET /api/v1/programas_academicos/` (para dropdown)
-- ⚠️ `GET /api/v1/ubicaciones/` (para dropdown)
+- ⚠️ `GET /api/v1/profile/programas_academicos/` (para dropdown)
+- ⚠️ `GET /api/v1/profile/ubicaciones/` (para dropdown)
 
 ### 3. Configuración necesaria
 - ✅ CORS: Permitir `http://localhost:8081`
@@ -20,7 +20,7 @@ Este documento contiene información técnica específica para integrar el front
 
 ## 📋 Formato de Respuesta Esperado
 
-### GET /programas_academicos/ y GET /ubicaciones/
+### GET /profile/programas_academicos/ y GET /profile/ubicaciones/
 
 **Estructura requerida** (para dropdowns):
 ```json
@@ -126,7 +126,7 @@ path("update-profile/", UpdateProfileView.as_view(), name="update_profile"),
 - `programa_academico`: debe existir en la tabla ProgramaAcademico o ser null
 - `ubicacion`: debe existir en la tabla Ubicacion o ser null
 
-### Para GET /programas_academicos/ y GET /ubicaciones/
+### Para GET /profile/programas_academicos/ y GET /profile/ubicaciones/
 
 1. Crear ViewSets (ReadOnly):
 ```python
@@ -158,12 +158,16 @@ class UbicacionSerializer(serializers.ModelSerializer):
         fields = ['id', 'descripcion']
 ```
 
-3. Agregar URLs:
+3. Agregar URLs en el router de profile:
 ```python
-# urls.py
+# apps/profile_app/subapps/profile/urls.py
 router.register('programas_academicos', ProgramaAcademicoViewSet, basename='programas_academicos')
 router.register('ubicaciones', UbicacionViewSet, basename='ubicaciones')
 ```
+
+**Rutas resultantes**:
+- `/api/v1/profile/programas_academicos/`
+- `/api/v1/profile/ubicaciones/`
 
 **Nota**: Estos endpoints pueden ser públicos (no requieren autenticación) ya que son datos de referencia.
 
@@ -200,7 +204,7 @@ path("get-profile/<int:userId>/", GetOtherProfileView.as_view(), name="get_other
 - **Empieza aquí**: [`LEEME_PRIMERO.md`](./LEEME_PRIMERO.md)
 - **Documentación técnica**: [`INTEGRATION.md`](./INTEGRATION.md)
 - **Código listo para descomentar**: Ver comentarios `// TODO` en:
-  - `src/lib/api.ts`
+  - `src/features/profile/api.ts`
   - `src/features/profile/hooks/useProfile.ts`
   - `src/features/profile/hooks/useOtherProfile.ts`
 

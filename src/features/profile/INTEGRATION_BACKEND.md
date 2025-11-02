@@ -147,9 +147,9 @@ Mismo formato que `GET /profile/get-profile/`
 
 El frontend necesita obtener las listas de **Programas Académicos** y **Ubicaciones** para mostrar en los dropdowns del formulario de edición.
 
-### GET `/api/v1/programas_academicos/` ⚠️ **PENDIENTE IMPLEMENTACIÓN**
+### 5. GET `/api/v1/profile/programas_academicos/` ⚠️ **PENDIENTE IMPLEMENTACIÓN**
 
-**Autenticación**: No requerida (o según preferencia del backend)  
+**Autenticación**: Requerida (o según preferencia del backend)  
 **Método**: `GET`
 
 **Respuesta Exitosa (200)**:
@@ -169,9 +169,9 @@ El frontend necesita obtener las listas de **Programas Académicos** y **Ubicaci
 
 ---
 
-### GET `/api/v1/ubicaciones/` ⚠️ **PENDIENTE IMPLEMENTACIÓN**
+### 6. GET `/api/v1/profile/ubicaciones/` ⚠️ **PENDIENTE IMPLEMENTACIÓN**
 
-**Autenticación**: No requerida (o según preferencia del backend)  
+**Autenticación**: Requerida (o según preferencia del backend)  
 **Método**: `GET`
 
 **Respuesta Exitosa (200)**:
@@ -325,7 +325,7 @@ El formulario de edición (`EditProfile`) usa dropdowns para `programa_academico
 
 1. **Backend devuelve datos de referencia**:
    ```json
-   GET /api/v1/programas_academicos/
+   GET /api/v1/profile/programas_academicos/
    → [{ "id": 1, "descripcion": "Ingeniería de Sistemas" }]
    ```
 
@@ -394,6 +394,7 @@ src/
 │   └── ViewOtherProfilePage.tsx → /profile/:userId
 │
 └── features/profile/           ← Lógica y componentes
+    ├── api.ts                 ← ✅ Endpoints del feature Profile
     ├── MyProfile.tsx           ← Componente visual
     ├── EditProfile.tsx         ← Formulario
     ├── ViewOtherProfile.tsx    ← Vista de otros
@@ -408,18 +409,18 @@ src/
 
 ## 🛠️ Código a Descomentar (Cuando endpoints estén listos)
 
-### Paso 1: Descomentar en `src/lib/api.ts`
+### Paso 1: Descomentar en `src/features/profile/api.ts`
 
-Buscar las líneas marcadas con `// TODO` y descomentar:
+Buscar las líneas marcadas con `// TODO` y descomentar en `src/features/profile/api.ts`:
 
 ```typescript
-// Línea ~206: updateProfile
+// Línea ~58: updateProfile
 updateProfile: async (data: {...}) => {
   const response = await api.patch('/profile/update-profile/', data);
   return response.data;
 },
 
-// Línea ~224: getOtherProfile  
+// Línea ~73: getOtherProfile  
 getOtherProfile: async (userId: number) => {
   const response = await api.get(`/profile/get-profile/${userId}/`);
   return response.data;
@@ -534,8 +535,8 @@ Antes de entregar integración completa, verificar:
 - [ ] `POST /api/v1/profile/create-profile/` funciona
 - [ ] `PATCH /api/v1/profile/update-profile/` implementado y funciona
 - [ ] `GET /api/v1/profile/get-profile/:userId/` implementado y funciona
-- [ ] `GET /api/v1/programas_academicos/` implementado y funciona
-- [ ] `GET /api/v1/ubicaciones/` implementado y funciona
+- [ ] `GET /api/v1/profile/programas_academicos/` implementado y funciona
+- [ ] `GET /api/v1/profile/ubicaciones/` implementado y funciona
 - [ ] CORS configurado para `http://localhost:8081`
 - [ ] JWT Authentication funcionando
 - [ ] Respuestas en formato JSON correcto

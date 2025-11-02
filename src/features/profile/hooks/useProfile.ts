@@ -3,7 +3,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { profileAPI } from '@/lib/api';
+import { profileAPI } from '../api';
 import { useToast } from '@/hooks/use-toast';
 import type { Profile, ProfileFormData, CreateProfileResponse } from '../types';
 

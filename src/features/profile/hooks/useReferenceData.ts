@@ -3,7 +3,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { referenceDataAPI } from '@/lib/api';
+import { profileAPI } from '../api';
 
 // Tipo para items de referencia (Programa Académico y Ubicación)
 export interface ReferenceItem {
@@ -16,9 +16,9 @@ export interface ReferenceItem {
  */
 export const useProgramasAcademicos = () => {
   return useQuery<ReferenceItem[]>({
-    queryKey: ['programas_academicos'],
+    queryKey: ['profile', 'programas_academicos'],
     queryFn: async () => {
-      const data = await referenceDataAPI.getProgramasAcademicos();
+      const data = await profileAPI.getProgramasAcademicos();
       return data;
     },
     staleTime: 10 * 60 * 1000, // 10 minutos (cambian poco)
@@ -31,9 +31,9 @@ export const useProgramasAcademicos = () => {
  */
 export const useUbicaciones = () => {
   return useQuery<ReferenceItem[]>({
-    queryKey: ['ubicaciones'],
+    queryKey: ['profile', 'ubicaciones'],
     queryFn: async () => {
-      const data = await referenceDataAPI.getUbicaciones();
+      const data = await profileAPI.getUbicaciones();
       return data;
     },
     staleTime: 10 * 60 * 1000, // 10 minutos (cambian poco)

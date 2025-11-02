@@ -5,7 +5,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
-import { profileAPI } from '@/lib/api';
+import { profileAPI } from '../api';
 import type { Profile } from '../types';
 
 export const useOtherProfile = (userId: number) => {

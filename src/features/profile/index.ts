@@ -45,3 +45,6 @@ export {
 
 // Utils
 export { calculateAge, getHobbyIcon, formatHeight, validateProfileData } from './utils';
+
+// API
+export { profileAPI } from './api';

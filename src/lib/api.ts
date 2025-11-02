@@ -25,6 +25,29 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
+// Helper function to refresh token (defined before interceptor to avoid circular dependency)
+const refreshToken = async () => {
+  const refreshTokenValue = localStorage.getItem('refresh_token');
+  if (!refreshTokenValue) {
+    throw new Error('No refresh token available');
+  }
+
+  // Create a new axios instance without interceptors to avoid infinite loops
+  const refreshApi = axios.create({
+    baseURL: API_BASE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    timeout: 30000,
+  });
+
+  const response = await refreshApi.post('/auth/token/refresh/', {
+    refresh: refreshTokenValue,
+  });
+
+  return response.data;
+};
+
 // Response interceptor to handle common errors (e.g., expired access token)
 api.interceptors.response.use(
   (response: AxiosResponse) => response,
@@ -36,7 +59,7 @@ api.interceptors.response.use(
 
       try {
         // Refresh token
-        const refreshResponse = await authAPI.refreshToken();
+        const refreshResponse = await refreshToken();
         const newAccessToken = refreshResponse.access;
         const newRefreshToken = refreshResponse.refresh;
 
@@ -173,81 +196,10 @@ export const authAPI = {
     const response = await api.get('/auth/user-get/');
     return response.data;
   },
-};
 
-// Reference Data API endpoints (Programas Académicos y Ubicaciones)
-export const referenceDataAPI = {
-  /**
-   * GET /api/v1/programas_academicos/
-   * Obtiene la lista de programas académicos disponibles
-   * Retorna: [{ id: number, descripcion: string }]
-   */
-  getProgramasAcademicos: async () => {
-    const response = await api.get('/programas_academicos/');
-    return response.data;
+  refreshToken: async () => {
+    return await refreshToken();
   },
-
-  /**
-   * GET /api/v1/ubicaciones/
-   * Obtiene la lista de ubicaciones disponibles
-   * Retorna: [{ id: number, descripcion: string }]
-   */
-  getUbicaciones: async () => {
-    const response = await api.get('/ubicaciones/');
-    return response.data;
-  },
-};
-
-// Profile API endpoints
-export const profileAPI = {
-  /**
-   * GET /api/v1/profile/get-profile/
-   * Obtiene el perfil del usuario autenticado
-   * ✅ Implementado en backend
-   */
-  getProfile: async () => {
-    const response = await api.get('/profile/get-profile/');
-    return response.data;
-  },
-
-  /**
-   * POST /api/v1/profile/create-profile/
-   * Crea un perfil con valores por defecto
-   * ✅ Implementado en backend
-   */
-  createProfile: async () => {
-    const response = await api.post('/profile/create-profile/');
-    return response.data;
-  },
-
-  /**
-   * PATCH /api/v1/profile/update-profile/
-   * Actualiza el perfil del usuario
-   * ⚠️ Pendiente implementación en backend
-   * TODO: Descomentar cuando el endpoint esté listo
-   */
-  // updateProfile: async (data: {
-  //   programa_academico?: number | null;
-  //   ubicacion?: number | null;
-  //   hobbies?: string[];
-  //   estatura?: number | null;
-  //   estado?: string;
-  //   tagline?: string;
-  // }) => {
-  //   const response = await api.patch('/profile/update-profile/', data);
-  //   return response.data;
-  // },
-
-  /**
-   * GET /api/v1/profile/get-profile/:userId/
-   * Obtiene el perfil de otro usuario
-   * ⚠️ Pendiente implementación en backend
-   * TODO: Descomentar cuando el endpoint esté listo
-   */
-  // getOtherProfile: async (userId: number) => {
-  //   const response = await api.get(`/profile/get-profile/${userId}/`);
-  //   return response.data;
-  // },
 };
 
 export default api;

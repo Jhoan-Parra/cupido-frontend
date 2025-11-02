@@ -173,10 +173,10 @@ import { ProfileStats } from '@/features/profile';
 
 ## 📡 API Integration
 
-Los endpoints están definidos en `@/lib/api`:
+Los endpoints están definidos en `src/features/profile/api.ts`:
 
 ```tsx
-import { profileAPI } from '@/lib/api';
+import { profileAPI } from './api';  // O desde el feature: import { profileAPI } from '@/features/profile';
 
 // Obtener perfil
 const profile = await profileAPI.getProfile();

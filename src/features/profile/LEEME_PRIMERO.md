@@ -33,8 +33,8 @@ Lee estos documentos en orden:
 
 - `PATCH /api/v1/profile/update-profile/` ⚠️
 - `GET /api/v1/profile/get-profile/:userId/` ⚠️
-- `GET /api/v1/programas_academicos/` ⚠️ (para dropdown de programa académico)
-- `GET /api/v1/ubicaciones/` ⚠️ (para dropdown de ubicación)
+- `GET /api/v1/profile/programas_academicos/` ⚠️ (para dropdown de programa académico)
+- `GET /api/v1/profile/ubicaciones/` ⚠️ (para dropdown de ubicación)
 
 ## 🔧 Configuración Rápida
 
@@ -57,8 +57,8 @@ CORS_ALLOW_CREDENTIALS = True
 
 Cuando implementes los endpoints, solo descomenta estas líneas:
 
-1. **`src/lib/api.ts`** línea ~206: `updateProfile`
-2. **`src/lib/api.ts`** línea ~224: `getOtherProfile`
+1. **`src/features/profile/api.ts`** línea ~58: `updateProfile`
+2. **`src/features/profile/api.ts`** línea ~73: `getOtherProfile`
 3. **`src/features/profile/hooks/useProfile.ts`** línea ~92
 4. **`src/features/profile/hooks/useOtherProfile.ts`** línea ~16
 
