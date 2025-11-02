@@ -1,11 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppStore } from '@/store/appStore';
 import { useToast } from '@/hooks/use-toast';
 import { authAPI } from '@/lib/api';
+import { ViewOtherProfile } from '@/features/profile';
+import type { Profile } from '@/features/profile';
 
 const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
   const { closeModals, logout, user } = useAppStore();
   const { toast } = useToast();
+  const [showOtherProfile, setShowOtherProfile] = useState(false);
+
+  // Mock profile data for testing ViewOtherProfile
+  const mockOtherProfile: Profile = {
+    perfil_id: 1,
+    usuario: {
+      usuario_id: 2,
+      nombres: 'María Juana',
+      apellidos: 'López',
+      email: 'maria@unipamplona.edu.co',
+      fechanacimiento: '2003-05-15',
+      descripcion: 'Soy estudiante de ingeniería de sistemas, amante del café, la música indie y las series. Me encanta aprender, reír y conocer personas con buena energía y ganas de compartir momentos.',
+    },
+    programa_academico: null,
+    ubicacion: { ubicacion_id: 1, descripcion: 'Pamplona' },
+    hobbies: ['Música', 'Videojuegos', 'Lectura'],
+    estatura: 1.65,
+    estado: 'Encupidado',
+    tagline: 'Con hambre',
+    photos: [
+      'https://via.placeholder.com/465x800/FFB6C1/000000?text=Foto+1',
+      'https://via.placeholder.com/401x700/FFB6C1/000000?text=Foto+2',
+      'https://via.placeholder.com/401x700/FFB6C1/000000?text=Foto+3',
+    ],
+  };
 
   const handleLogout = async () => {
     try {
@@ -87,7 +116,7 @@ const Dashboard: React.FC = () => {
             </div>
 
             {/* Placeholder para futuras funcionalidades */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-2xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-2xl">
               <div className="bg-white/80 p-6 rounded-xl text-center shadow-sm">
                 <div className="text-2xl mb-2">💬</div>
                 <h3 className="font-semibold text-gray-800">Chat</h3>
@@ -100,11 +129,23 @@ const Dashboard: React.FC = () => {
                 <p className="text-sm text-gray-600">Próximamente</p>
               </div>
 
-              <div className="bg-white/80 p-6 rounded-xl text-center shadow-sm">
+              <button
+                onClick={() => navigate('/profile')}
+                className="bg-white/80 p-6 rounded-xl text-center shadow-sm hover:bg-white transition-colors w-full"
+              >
                 <div className="text-2xl mb-2">👤</div>
-                <h3 className="font-semibold text-gray-800">Perfil</h3>
-                <p className="text-sm text-gray-600">Próximamente</p>
-              </div>
+                <h3 className="font-semibold text-gray-800">Mi Perfil</h3>
+                <p className="text-sm text-gray-600">Ver mi perfil</p>
+              </button>
+              
+              <button
+                onClick={() => setShowOtherProfile(true)}
+                className="bg-white/80 p-6 rounded-xl text-center shadow-sm hover:bg-white transition-colors w-full"
+              >
+                <div className="text-2xl mb-2">👥</div>
+                <h3 className="font-semibold text-gray-800">Ver Otros</h3>
+                <p className="text-sm text-gray-600">Demo</p>
+              </button>
             </div>
 
             {/* Botón de logout */}
@@ -119,6 +160,26 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Demo: View Other Profile (can be removed when backend is ready) */}
+      {showOtherProfile && (
+        <ViewOtherProfile
+          profile={mockOtherProfile}
+          onClose={() => setShowOtherProfile(false)}
+          onLike={() => {
+            toast({
+              title: 'Like enviado',
+              description: 'Has dado like a este perfil',
+            });
+          }}
+          onChat={() => {
+            toast({
+              title: 'Chat',
+              description: 'Función de chat próximamente',
+            });
+          }}
+        />
+      )}
     </div>
   );
 };

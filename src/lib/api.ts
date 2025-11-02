@@ -175,4 +175,79 @@ export const authAPI = {
   },
 };
 
+// Reference Data API endpoints (Programas Académicos y Ubicaciones)
+export const referenceDataAPI = {
+  /**
+   * GET /api/v1/programas_academicos/
+   * Obtiene la lista de programas académicos disponibles
+   * Retorna: [{ id: number, descripcion: string }]
+   */
+  getProgramasAcademicos: async () => {
+    const response = await api.get('/programas_academicos/');
+    return response.data;
+  },
+
+  /**
+   * GET /api/v1/ubicaciones/
+   * Obtiene la lista de ubicaciones disponibles
+   * Retorna: [{ id: number, descripcion: string }]
+   */
+  getUbicaciones: async () => {
+    const response = await api.get('/ubicaciones/');
+    return response.data;
+  },
+};
+
+// Profile API endpoints
+export const profileAPI = {
+  /**
+   * GET /api/v1/profile/get-profile/
+   * Obtiene el perfil del usuario autenticado
+   * ✅ Implementado en backend
+   */
+  getProfile: async () => {
+    const response = await api.get('/profile/get-profile/');
+    return response.data;
+  },
+
+  /**
+   * POST /api/v1/profile/create-profile/
+   * Crea un perfil con valores por defecto
+   * ✅ Implementado en backend
+   */
+  createProfile: async () => {
+    const response = await api.post('/profile/create-profile/');
+    return response.data;
+  },
+
+  /**
+   * PATCH /api/v1/profile/update-profile/
+   * Actualiza el perfil del usuario
+   * ⚠️ Pendiente implementación en backend
+   * TODO: Descomentar cuando el endpoint esté listo
+   */
+  // updateProfile: async (data: {
+  //   programa_academico?: number | null;
+  //   ubicacion?: number | null;
+  //   hobbies?: string[];
+  //   estatura?: number | null;
+  //   estado?: string;
+  //   tagline?: string;
+  // }) => {
+  //   const response = await api.patch('/profile/update-profile/', data);
+  //   return response.data;
+  // },
+
+  /**
+   * GET /api/v1/profile/get-profile/:userId/
+   * Obtiene el perfil de otro usuario
+   * ⚠️ Pendiente implementación en backend
+   * TODO: Descomentar cuando el endpoint esté listo
+   */
+  // getOtherProfile: async (userId: number) => {
+  //   const response = await api.get(`/profile/get-profile/${userId}/`);
+  //   return response.data;
+  // },
+};
+
 export default api;

@@ -94,6 +94,31 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 
+---
+
+## 🔗 Integración con Backend
+
+### Profile Feature - Estado de Integración
+
+El feature **Profile** está completamente implementado en el frontend y listo para integrarse con el backend.
+
+**📘 Documentación para el equipo de backend**:
+- **[LEEME_PRIMERO.md](./src/features/profile/LEEME_PRIMERO.md)** - Empieza aquí
+- **[INTEGRATION_BACKEND.md](./src/features/profile/INTEGRATION_BACKEND.md)** - Guía completa de integración
+- **[FOR_BACKEND_TEAM.md](./src/features/profile/FOR_BACKEND_TEAM.md)** - Resumen ejecutivo
+
+**✅ Endpoints ya funcionando**:
+- `GET /api/v1/profile/get-profile/`
+- `POST /api/v1/profile/create-profile/`
+
+**⚠️ Endpoints pendientes**:
+- `PATCH /api/v1/profile/update-profile/`
+- `GET /api/v1/profile/get-profile/:userId/`
+
+Cuando el backend implemente los endpoints faltantes, solo se necesitan descomentar líneas marcadas con `// TODO` en el código.
+
+---
+
 ## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
