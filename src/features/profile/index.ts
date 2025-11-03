@@ -17,14 +17,12 @@ export type {
   ProgramObject,
   GeneroObject,
   ProfileFormData,
-  CreateProfileResponse,
   GetProfileResponse,
 } from './types';
 
 // Hooks
 export { 
-  useProfile, 
-  useCreateProfile, 
+  useProfile,  
   useUpdateProfile, 
   useOtherProfile,
   useProgramasAcademicos,

@@ -4,19 +4,90 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { profileAPI } from '../api';
+import { authAPI } from '@/lib/api';
 import { useToast } from '@/hooks/use-toast';
-import type { Profile, ProfileFormData, CreateProfileResponse } from '../types';
+import type { Profile, ProfileFormData, UsuarioObject } from '../types';
 
 /**
  * Hook to get current user's profile
+ * Combines profile data with user data from auth endpoint
  */
 export const useProfile = () => {
   return useQuery<Profile | null>({
     queryKey: ['profile', 'current'],
     queryFn: async () => {
       try {
-        const data = await profileAPI.getProfile();
-        return data;
+        // Get profile data
+        const profileData = await profileAPI.getOwnProfile();
+        console.log('Profile data from backend:', profileData);
+        
+        // Always fetch user data to ensure we have complete information
+        let userData = null;
+        try {
+          const userResponse = await authAPI.getUserProfile();
+          console.log('User response from backend:', userResponse);
+          // The endpoint returns { user: {...}, estado: ..., should_complete_profile: ... }
+          userData = userResponse.user || userResponse;
+        } catch (userError: any) {
+          console.warn('No se pudieron obtener los datos del usuario:', userError);
+        }
+        
+        // If we have user data, combine it with profile data
+        if (profileData && userData) {
+          // Normalize hobbies: convert string to array if needed
+          let normalizedHobbies: string[] | null = null;
+          if (profileData.hobbies) {
+            if (typeof profileData.hobbies === 'string') {
+              // Split by comma and trim each hobby
+              normalizedHobbies = profileData.hobbies
+                .split(',')
+                .map(h => h.trim())
+                .filter(h => h.length > 0);
+            } else if (Array.isArray(profileData.hobbies)) {
+              normalizedHobbies = profileData.hobbies;
+            }
+          }
+
+          // Combine profile data with user data
+          const combinedProfile: Profile = {
+            ...profileData,
+            hobbies: normalizedHobbies,
+            usuario: {
+              usuario_id: userData.usuario_id,
+              nombres: userData.nombres || '',
+              apellidos: userData.apellidos || '',
+              email: userData.email,
+              fechanacimiento: userData.fechanacimiento ? 
+                (typeof userData.fechanacimiento === 'string' 
+                  ? userData.fechanacimiento 
+                  : new Date(userData.fechanacimiento).toISOString().split('T')[0]
+                ) : '',
+              descripcion: userData.descripcion || null,
+              ...(userData.genero_id && {
+                genero: {
+                  genero_id: userData.genero_id,
+                  descripcion: userData.genero?.descripcion || '',
+                }
+              }),
+            } as UsuarioObject,
+          };
+          
+          console.log('Combined profile:', combinedProfile);
+          return combinedProfile;
+        }
+        
+        // Normalize hobbies even if usuario is already an object
+        if (profileData && profileData.hobbies && typeof profileData.hobbies === 'string') {
+          return {
+            ...profileData,
+            hobbies: profileData.hobbies
+              .split(',')
+              .map(h => h.trim())
+              .filter(h => h.length > 0)
+          };
+        }
+        
+        return profileData;
       } catch (error: any) {
         // Better error handling for different error types
         if (error.response) {
@@ -51,34 +122,6 @@ export const useProfile = () => {
 };
 
 /**
- * Hook to create a new profile
- */
-export const useCreateProfile = () => {
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
-
-  return useMutation<CreateProfileResponse, Error>({
-    mutationFn: async () => {
-      return await profileAPI.createProfile();
-    },
-    onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['profile'] });
-      toast({
-        title: 'Perfil creado',
-        description: data.message || 'Tu perfil ha sido creado exitosamente.',
-      });
-    },
-    onError: (error: Error) => {
-      toast({
-        title: 'Error al crear perfil',
-        description: error.message || 'No se pudo crear el perfil. Intenta nuevamente.',
-        variant: 'destructive',
-      });
-    },
-  });
-};
-
-/**
  * Hook to update profile
  * ⚠️ Pendiente: Descomentar profileAPI.updateProfile cuando backend esté listo
  */
@@ -88,9 +131,7 @@ export const useUpdateProfile = () => {
 
   return useMutation<Profile, Error, ProfileFormData>({
     mutationFn: async (data: ProfileFormData) => {
-      // TODO: Descomentar cuando backend implemente PATCH /profile/update-profile/
-      // return await profileAPI.updateProfile(data);
-      throw new Error('Update endpoint not implemented yet. Ver INTEGRATION.md para más detalles.');
+      return await profileAPI.updateOwnProfile(data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['profile'] });

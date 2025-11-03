@@ -2,6 +2,8 @@
  * Profile Feature - Utility Functions
  */
 
+import type { Profile } from '../types';
+
 /**
  * Calculates age from date of birth
  */

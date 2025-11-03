@@ -67,10 +67,6 @@ export interface ProfileFormData {
 }
 
 // API response types
-export interface CreateProfileResponse {
-  message: string;
-  perfil_id: number;
-}
 
 export interface GetProfileResponse extends Profile {}
 

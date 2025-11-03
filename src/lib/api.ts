@@ -41,11 +41,6 @@ const refreshToken = async () => {
     timeout: 30000,
   });
 
-  const response = await refreshApi.post('/auth/token/refresh/', {
-    refresh: refreshTokenValue,
-  });
-
-  return response.data;
 };
 
 // Response interceptor to handle common errors (e.g., expired access token)
@@ -54,35 +49,18 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Optional: handle 401 in a simpler way, without refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      try {
-        // Refresh token
-        const refreshResponse = await refreshToken();
-        const newAccessToken = refreshResponse.access;
-        const newRefreshToken = refreshResponse.refresh;
+      // Clear tokens and logout immediately
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
 
-        // Store new tokens
-        localStorage.setItem('access_token', newAccessToken);
-        if (newRefreshToken) {
-          localStorage.setItem('refresh_token', newRefreshToken);
-        }
+      const { useAppStore } = await import("@/store/appStore");
+      useAppStore.getState().logout();
 
-        // Retry original request with new access token
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return api(originalRequest);
-      } catch (refreshError) {
-        // Token refresh failed - clear tokens and logout
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-
-        // Import dynamically to avoid circular dependencies
-        const { useAppStore } = await import('@/store/appStore');
-        useAppStore.getState().logout();
-
-        return Promise.reject(refreshError);
-      }
+      return Promise.reject(error);
     }
 
     return Promise.reject(error);
