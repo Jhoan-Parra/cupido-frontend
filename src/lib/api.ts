@@ -200,14 +200,18 @@ export const authAPI = {
 
   // Catalogs
   getDegrees: async () => {
-    // GET /profile/profileManagement/degrees/
-    const response = await api.get("/profile/profileManagement/degrees/");
+    // GET /profile/profileManagement/degrees/ con limit alto para obtener todos los programas
+    const response = await api.get("/profile/profileManagement/degrees/", {
+      params: { limit: 1000 } // Solicitar hasta 1000 programas para obtener todos
+    });
     return response.data;
   },
 
   getLocations: async () => {
-    // GET /profile/profileManagement/locations/
-    const response = await api.get("/profile/profileManagement/locations/");
+    // GET /profile/profileManagement/locations/ con limit alto para obtener todas las ubicaciones
+    const response = await api.get("/profile/profileManagement/locations/", {
+      params: { limit: 1000 } // Solicitar hasta 1000 ubicaciones para obtener todas
+    });
     return response.data;
   },
 
